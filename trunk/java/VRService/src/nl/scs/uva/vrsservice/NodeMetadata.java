@@ -8,11 +8,14 @@ import java.net.URI;
 import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import nl.uva.vlet.Global;
+import nl.uva.vlet.GlobalConfig;
 import nl.uva.vlet.data.VAttribute;
 import nl.uva.vlet.data.VAttributeSet;
 import nl.uva.vlet.exception.VlException;
 import nl.uva.vlet.exception.VlIOException;
 import nl.uva.vlet.exception.VlURISyntaxException;
+import nl.uva.vlet.util.MimeTypes;
 import nl.uva.vlet.vrl.VRL;
 import nl.uva.vlet.vrs.VNode;
 
@@ -23,13 +26,13 @@ import nl.uva.vlet.vrs.VNode;
 public class NodeMetadata implements INodeMetadata {
 
     private final VNode node;
+    private static int parentLevel = 0;
 
     public NodeMetadata(VNode node) {
         debug("-----------------New Node " + this.hashCode() + " ----------------");
         this.node = node;
         debug("Node: " + node.hashCode());
         debug("VRL: " + node.getVRL());
-        debug("--------------------------------------------");
     }
 
     @Override
@@ -126,6 +129,8 @@ public class NodeMetadata implements INodeMetadata {
     public String getMimeType() {
         String type = null;
         try {
+            MimeTypes l;
+            
             type = node.getMimeType();
             debug("getMimeType: " + type);
         } catch (Exception ex) {
@@ -156,19 +161,28 @@ public class NodeMetadata implements INodeMetadata {
     @Override
     public String[] getAttributeNames() {
         String[] attrNames = node.getAttributeNames();
-        debug("getAttributeNames: " + attrNames);
+        for (String name : attrNames) {
+            debug("getAttributeNames: " + name);
+        }
         return attrNames;
     }
 
-//    @Override
-//    public VAttribute[] getAttributes() {
-//        try {
-//            return node.getAttributes();
-//        } catch (Exception ex) {
-//            System.err.println("Can't get attributes!!!!!!!!!");
-//        }
-//        return null;
-//    }
+    @Override
+    public VAttribute[] getAttributes() {
+        try {
+            VAttribute[] attributes = node.getAttributes();
+            debug("getAttributes: " + attributes);
+
+            for (VAttribute attr : attributes) {
+                debug("getAttributes: " + attr.getName() + " : " + attr.getValue());
+            }
+            return attributes;
+        } catch (Exception ex) {
+            System.err.println("Can't get attributes!!!!!!!!!");
+            System.err.println(ex.getMessage());
+        }
+        return null;
+    }
 //    @Override
 //    public VAttribute[] getAttributes(String[] names) {
 //        try {
@@ -203,6 +217,7 @@ public class NodeMetadata implements INodeMetadata {
 //        }
 //        return null;
 //    }
+
     @Override
     public String getQuery() {
         String query = node.getQuery();
@@ -241,23 +256,33 @@ public class NodeMetadata implements INodeMetadata {
 //        //takes a long time 
 //        return node.getHelp();
 //    }
-    @Override
-    public INodeMetadata getParent() {
-        try {
-            //for some reason it goes into recursion
-            NodeMetadata parent = new NodeMetadata(node.getParent());
-            debug("getParent: " + parent);
-            return parent;
-        } catch (Exception ex) {
-            System.err.println("Cant get getParent!");
-        }
-        return null;
-    }
-//
 //    @Override
-//    public VRL getParentLocation() {
-//        return node.getParentLocation();
+//    public INodeMetadata getParent() {
+//        //for some reason it goes into recursion
+//        try {
+//            parentLevel++;
+//            debug("parentLevel: " + parentLevel);
+//            if (parentLevel == 1) {
+//                NodeMetadata parent = new NodeMetadata(node.getParent());
+//                debug("getParent: " + parent);
+//                return parent;
+//            }
+//            if(parentLevel > 1){
+//                debug("getParent stoping recursion!: ");
+//                return null;
+//            }
+//        } catch (Exception ex) {
+//            System.err.println("Cant get getParent!");
+//        }
+//        return null;
 //    }
+//
+    @Override
+    public String getParentLocation() {
+        VRL parentLoc = node.getParentLocation();
+        debug("getParentLocation: " + parentLoc);
+        return parentLoc.toString();
+    }
 //
 //    @Override
 //    public INodeMetadata[] getParents() {

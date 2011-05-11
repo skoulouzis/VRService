@@ -4,13 +4,18 @@
  */
 package nl.scs.uva.vrsservice;
 
+import java.io.File;
 import java.net.URI;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import nl.uva.vlet.Global;
 import nl.uva.vlet.GlobalConfig;
 import nl.uva.vlet.data.VAttribute;
 import nl.uva.vlet.exception.VlException;
+import nl.uva.vlet.vfs.localfs.LDir;
+import nl.uva.vlet.vfs.localfs.LFile;
 import nl.uva.vlet.vrs.VNode;
 import nl.uva.vlet.vrs.VRS;
 import nl.uva.vlet.vrs.VRSClient;
@@ -30,18 +35,24 @@ public class Service {
 
         GlobalConfig.setIsService(isInService);
         GlobalConfig.setInitURLStreamFactory(!isInService);
-        
+        GlobalConfig.setSystemProperty(null, null);
+
         Global.init();
 
         vrsContext = VRSContext.getDefault();
         this.client = new VRSClient(vrsContext);
+        
+//        URLClassLoader urlClassLoader = (URLClassLoader) ClassLoader.getSystemClassLoader();
+//        urlClassLoader.
+//        File f = new File("lib");
+//        System.err.println("---------------pwd: " + f.getAbsolutePath());
     }
 
     public NodeMetadata openLocation(String uri) {
         try {
-            debug("------------- URI: "+uri);
+            debug("------------- URI: " + uri);
             VNode node = client.openLocation(uri);
-            debug("New Node: "+node.getVRL());
+            debug("New Node: " + node.getVRL());
             NodeMetadata meta = new NodeMetadata(node);
 
             return meta;
@@ -76,6 +87,6 @@ public class Service {
     }
 
     private void debug(String msg) {
-         System.err.println(this.getClass().getSimpleName() + ": " + msg);
+        System.err.println(this.getClass().getSimpleName() + ": " + msg);
     }
 }
