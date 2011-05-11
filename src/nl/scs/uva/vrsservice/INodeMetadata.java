@@ -170,17 +170,17 @@ interface INodeMetadata {
 //     * If an implementation has another 'logical' parent then just
 //     * the dirname of the current location, override this method. 
 //     */
-    public String getParentLocation();
-//
-//    /** 
-//     * Get Parents if the Node is part of a Graph.
-//     * <br>
-//     * Returns one parent if Node is part of a Tree or null if
-//     * Node has no parents. 
-//     * @throws VlException
-//     */
-//    public INodeMetadata[] getParents();
-//
+    public URI getParentLocation();
+
+    /** 
+     * Get Parents if the Node is part of a Graph.
+     * <br>
+     * Returns one parent if Node is part of a Tree or null if
+     * Node has no parents. 
+     * @throws VlException
+     */
+//    public URI[] getParents();
+
     public String getScheme();
 
     /** 
@@ -189,10 +189,10 @@ interface INodeMetadata {
      * implementation.  
      */
     public String resolvePath(String subPath);
-//
-//    /** Resolve path against this VRL and return resolved VRL */
-//    public VRL resolvePathVRL(String path);
-//
+
+    /** Resolve path against this VRL and return resolved VRL */
+    public VRL resolvePathVRL(String path);
+
     /** 
      * Status String for nodes which implemented Status. 
      * Returns NULL if not supported. 
