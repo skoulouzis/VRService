@@ -81,7 +81,7 @@ interface INodeMetadata {
      * Get all attributes defined by attributeNames 
      * @throws VlException 
      */
-//    public VAttribute[] getAttributes();
+    public VAttribute[] getAttributes();
     /** 
      * Get all attributes defined by <code>names</code>.<br>
      * Elements in the <code>names</code> array may be null! 
@@ -162,7 +162,7 @@ interface INodeMetadata {
      * @return Parent VNode or null. 
      * @throws VlException
      */
-    public INodeMetadata getParent();
+//    public INodeMetadata getParent();
 //
 //    /**
 //     * Returns logical parent location of this node. 
@@ -170,7 +170,7 @@ interface INodeMetadata {
 //     * If an implementation has another 'logical' parent then just
 //     * the dirname of the current location, override this method. 
 //     */
-//    public VRL getParentLocation();
+    public String getParentLocation();
 //
 //    /** 
 //     * Get Parents if the Node is part of a Graph.

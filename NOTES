@@ -1,0 +1,2 @@
+The etc/mime.types must be copied to $AXIS_LOCATION/etc. If the folder is not there create it.
+
