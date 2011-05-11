@@ -130,7 +130,7 @@ public class NodeMetadata implements INodeMetadata {
         String type = null;
         try {
             MimeTypes l;
-            
+
             type = node.getMimeType();
             debug("getMimeType: " + type);
         } catch (Exception ex) {
@@ -185,7 +185,6 @@ public class NodeMetadata implements INodeMetadata {
 //        }
 //        return null;
 //    }
-    
     @Override
     public VAttribute[] getAttributes(String[] names) {
         try {
@@ -209,7 +208,7 @@ public class NodeMetadata implements INodeMetadata {
         }
         return null;
     }
-    
+
     @Override
     public VAttribute getNonmutableAttribute(String name) {
         try {
@@ -241,7 +240,6 @@ public class NodeMetadata implements INodeMetadata {
 //        
 //        return str;
 //    }
-    
     @Override
     public String getIconURL() {
         String iconURL = node.getIconURL();
@@ -261,7 +259,6 @@ public class NodeMetadata implements INodeMetadata {
 //        //takes a long time 
 //        return node.getHelp();
 //    }
-    
 //    @Override
 //    public INodeMetadata getParent() {
 //        //for some reason it goes into recursion
@@ -282,29 +279,40 @@ public class NodeMetadata implements INodeMetadata {
 //        }
 //        return null;
 //    }
-
     @Override
-    public String getParentLocation() {
-        VRL parentLoc = node.getParentLocation();
-        debug("getParentLocation: " + parentLoc);
-        return parentLoc.toString();
+    public URI getParentLocation() {
+        try {
+            VRL parentLoc = node.getParentLocation();
+            debug("getParentLocation: " + parentLoc);
+            return parentLoc.toURI();
+        } catch (VlURISyntaxException ex) {
+            Logger.getLogger(NodeMetadata.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
     }
-//
+
 //    @Override
-//    public INodeMetadata[] getParents() {
+//    public URI[] getParents() {
 //        try {
 //            VNode[] parents = node.getParents();
-//            NodeMetadata[] parentsMeta = new NodeMetadata[parents.length];
 //            for (int i = 0; i < parents.length; i++) {
-//                parentsMeta[i] = new NodeMetadata(parents[i]);
+//                debug("getParents: " + parents[i].getVRL());
 //            }
-//            return parentsMeta;
+////            NodeMetadata[] parentsMeta = new NodeMetadata[parents.length];
+//            URI[] uris = new URI[parents.length];
+//            for (int i = 0; i < parents.length; i++) {
+////                parentsMeta[i] = new NodeMetadata(parents[i]);
+//                uris[i] = parents[i].getVRL().toURI();
+//                debug("getParents: " + uris[i]);
+//            }
+//            return uris;
 //        } catch (Exception ex) {
-//             System.err.println("Cant get getParent!");
+//            System.err.println("Cant get getParent!");
+//            ex.printStackTrace();
 //        }
 //        return null;
 //    }
-//
+
     @Override
     public String getScheme() {
         return node.getScheme();
@@ -314,17 +322,17 @@ public class NodeMetadata implements INodeMetadata {
     public String resolvePath(String subPath) {
         return node.resolvePath(subPath);
     }
-//
-//    @Override
-//    public VRL resolvePathVRL(String path) {
-//        try {
-//            return node.resolvePathVRL(path);
-//        } catch (Exception ex) {
-//            System.err.println("Cant resolvePathVRL!");
-//        }
-//        return null;
-//    }
-//
+
+    @Override
+    public VRL resolvePathVRL(String path) {
+        try {
+            return node.resolvePathVRL(path);
+        } catch (Exception ex) {
+            System.err.println("Cant resolvePathVRL!");
+        }
+        return null;
+    }
+
     @Override
     public String getStatus() {
         try {
