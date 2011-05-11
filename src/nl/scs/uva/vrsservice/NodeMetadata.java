@@ -167,56 +167,60 @@ public class NodeMetadata implements INodeMetadata {
         return attrNames;
     }
 
+//    @Override
+//    public VAttribute[] getAttributes() {
+//        //Dug with getDateValue
+//        try {
+//            VAttribute[] attributes = node.getAttributes();
+//            debug("getAttributes: " + attributes);
+//
+//            for (VAttribute attr : attributes) {
+//                 debug("getAttributes: " + attr.getName() );
+////                debug("getAttributes: " + attr.getName() + " : " + attr.getValue());
+//            }
+//            return attributes;
+//        } catch (Exception ex) {
+//            System.err.println("Can't get attributes!!!!!!!!!");
+//            System.err.println(ex.getMessage());
+//        }
+//        return null;
+//    }
+    
     @Override
-    public VAttribute[] getAttributes() {
+    public VAttribute[] getAttributes(String[] names) {
         try {
-            VAttribute[] attributes = node.getAttributes();
-            debug("getAttributes: " + attributes);
-
-            for (VAttribute attr : attributes) {
-                debug("getAttributes: " + attr.getName() + " : " + attr.getValue());
-            }
-            return attributes;
+            VAttribute[] attr = node.getAttributes(names);
+            debug("getAttributes: " + attr);
+            return attr;
         } catch (Exception ex) {
             System.err.println("Can't get attributes!!!!!!!!!");
-            System.err.println(ex.getMessage());
         }
         return null;
     }
-//    @Override
-//    public VAttribute[] getAttributes(String[] names) {
-//        try {
-//            VAttribute[] attr = node.getAttributes(names);
-//            debug("getAttributes: " + attr);
-//            return attr;
-//        } catch (Exception ex) {
-//            System.err.println("Can't get attributes!!!!!!!!!");
-//        }
-//        return null;
-//    }
-//
-//    @Override
-//    public VAttributeSet getAttributeSet(String[] names) {
-//        try {
-//            VAttributeSet attrSet = node.getAttributeSet(names);
-//            debug("getAttributeSet: " + attrSet);
-//            return attrSet;
-//        } catch (Exception ex) {
-//            System.err.println("Cant get getAttributeSet!");
-//        }
-//        return null;
-//    }
-//    @Override
-//    public VAttribute getNonmutableAttribute(String name) {
-//        try {
-//            VAttribute attr = node.getNonmutableAttribute(name);
-//            debug("getNonmutableAttribute: " + attr);
-//            return attr;
-//        } catch (Exception ex) {
-//            System.err.println("Cant get getNonmutableAttribute!");
-//        }
-//        return null;
-//    }
+
+    @Override
+    public VAttributeSet getAttributeSet(String[] names) {
+        try {
+            VAttributeSet attrSet = node.getAttributeSet(names);
+            debug("getAttributeSet: " + attrSet);
+            return attrSet;
+        } catch (Exception ex) {
+            System.err.println("Cant get getAttributeSet!");
+        }
+        return null;
+    }
+    
+    @Override
+    public VAttribute getNonmutableAttribute(String name) {
+        try {
+            VAttribute attr = node.getNonmutableAttribute(name);
+            debug("getNonmutableAttribute: " + attr);
+            return attr;
+        } catch (Exception ex) {
+            System.err.println("Cant get getNonmutableAttribute!");
+        }
+        return null;
+    }
 
     @Override
     public String getQuery() {
@@ -237,6 +241,7 @@ public class NodeMetadata implements INodeMetadata {
 //        
 //        return str;
 //    }
+    
     @Override
     public String getIconURL() {
         String iconURL = node.getIconURL();
@@ -256,6 +261,7 @@ public class NodeMetadata implements INodeMetadata {
 //        //takes a long time 
 //        return node.getHelp();
 //    }
+    
 //    @Override
 //    public INodeMetadata getParent() {
 //        //for some reason it goes into recursion
@@ -276,7 +282,7 @@ public class NodeMetadata implements INodeMetadata {
 //        }
 //        return null;
 //    }
-//
+
     @Override
     public String getParentLocation() {
         VRL parentLoc = node.getParentLocation();
@@ -299,15 +305,15 @@ public class NodeMetadata implements INodeMetadata {
 //        return null;
 //    }
 //
-//    @Override
-//    public String getScheme() {
-//        return node.getScheme();
-//    }
-//
-//    @Override
-//    public String resolvePath(String subPath) {
-//        return node.resolvePath(subPath);
-//    }
+    @Override
+    public String getScheme() {
+        return node.getScheme();
+    }
+
+    @Override
+    public String resolvePath(String subPath) {
+        return node.resolvePath(subPath);
+    }
 //
 //    @Override
 //    public VRL resolvePathVRL(String path) {
@@ -319,40 +325,40 @@ public class NodeMetadata implements INodeMetadata {
 //        return null;
 //    }
 //
-//    @Override
-//    public String getStatus() {
-//        try {
-//            return node.getStatus();
-//        } catch (Exception ex) {
-//            System.err.println("Can;t get status!!!!!");
-//        }
-//        return null;
-//    }
-//
-//    @Override
-//    public boolean sync() {
-//        try {
-//            return node.sync();
-//        } catch (Exception ex) {
-//            System.err.println("Can't sync!!");
-//        }
-//        return false;
-//    }
-//
-//    @Override
-//    public String getType() {
-//        return node.getType();
-//    }
-//
-//    @Override
-//    public boolean exists() {
-//        try {
-//            return node.exists();
-//        } catch (Exception ex) {
-//            System.err.println("Dont't if exists!");
-//        }
-//        return false;
-//    }
+    @Override
+    public String getStatus() {
+        try {
+            return node.getStatus();
+        } catch (Exception ex) {
+            System.err.println("Can;t get status!!!!!");
+        }
+        return null;
+    }
+
+    @Override
+    public boolean sync() {
+        try {
+            return node.sync();
+        } catch (Exception ex) {
+            System.err.println("Can't sync!!");
+        }
+        return false;
+    }
+
+    @Override
+    public String getType() {
+        return node.getType();
+    }
+
+    @Override
+    public boolean exists() {
+        try {
+            return node.exists();
+        } catch (Exception ex) {
+            System.err.println("Dont't if exists!");
+        }
+        return false;
+    }
 
     private void debug(String msg) {
         System.err.println(this.getClass().getSimpleName() + ": " + msg);

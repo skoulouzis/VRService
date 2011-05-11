@@ -81,7 +81,7 @@ interface INodeMetadata {
      * Get all attributes defined by attributeNames 
      * @throws VlException 
      */
-    public VAttribute[] getAttributes();
+//    public VAttribute[] getAttributes();
     /** 
      * Get all attributes defined by <code>names</code>.<br>
      * Elements in the <code>names</code> array may be null! 
@@ -94,7 +94,7 @@ interface INodeMetadata {
      * does a getAttribute call per attribute. 
      * @throws VlException 
      */
-//    public VAttribute[] getAttributes(String names[]);
+    public VAttribute[] getAttributes(String names[]);
 
     /**
      * Same as getAttributes(), but return the attributes in an 
@@ -104,7 +104,7 @@ interface INodeMetadata {
      * @return
      * @throws VlException 
      */
-//    public VAttributeSet getAttributeSet(String names[]);
+    public VAttributeSet getAttributeSet(String names[]);
 
     /** 
      * Get Non-mutable attribute. This is an attribute which can be derived from the 
@@ -114,7 +114,7 @@ interface INodeMetadata {
      * example the Resource Type of a VFile which doesn't change during 
      * the lifetime of the (VFile) Object as this always must be "File" !   
      */
-//    public VAttribute getNonmutableAttribute(String name);
+    public VAttribute getNonmutableAttribute(String name);
 
     /** Return Query part of VRL */
     public String getQuery();
@@ -181,46 +181,46 @@ interface INodeMetadata {
 //     */
 //    public INodeMetadata[] getParents();
 //
-//    public String getScheme();
-//
-//    /** 
-//     * Resolve relative or absolute path against this resource. 
-//     * Uses VRL.resolvePaths(this.getPath(),subPath) as default 
-//     * implementation.  
-//     */
-//    public String resolvePath(String subPath);
+    public String getScheme();
+
+    /** 
+     * Resolve relative or absolute path against this resource. 
+     * Uses VRL.resolvePaths(this.getPath(),subPath) as default 
+     * implementation.  
+     */
+    public String resolvePath(String subPath);
 //
 //    /** Resolve path against this VRL and return resolved VRL */
 //    public VRL resolvePathVRL(String path);
 //
-//    /** 
-//     * Status String for nodes which implemented Status. 
-//     * Returns NULL if not supported. 
-//     * This method is exposed in the toplevel VNode interface even if not supported.  
-//     * @return
-//     * @throws VlException 
-//     */
-//    public String getStatus();
-//
-//    /** 
-//     * Synchronized cached attributes and/or refresh (optional) cached attributes
-//     * from remote resource. 
-//     * This is an import method in the case that an resource caches resource attributes, like
-//     * file attributes. 
-//     * @since VLET 1.2 
-//     * @return - false : not applicable/not implemented for this resource.<br>
-//     *         - true : synchronize/refresh is implemented and was successful.  
-//     * @throws VlException when resource synchronisation wasn't successful   
-//     */
-//    public boolean sync();
+    /** 
+     * Status String for nodes which implemented Status. 
+     * Returns NULL if not supported. 
+     * This method is exposed in the toplevel VNode interface even if not supported.  
+     * @return
+     * @throws VlException 
+     */
+    public String getStatus();
+
+    /** 
+     * Synchronized cached attributes and/or refresh (optional) cached attributes
+     * from remote resource. 
+     * This is an import method in the case that an resource caches resource attributes, like
+     * file attributes. 
+     * @since VLET 1.2 
+     * @return - false : not applicable/not implemented for this resource.<br>
+     *         - true : synchronize/refresh is implemented and was successful.  
+     * @throws VlException when resource synchronisation wasn't successful   
+     */
+    public boolean sync();
 //
 //    // ========================================================================
 //    // Abstract Interface 
 //    // ========================================================================
-//    /** Returns resource type, if it has one */
-//    public abstract String getType();
-//
-//    /** Whether this node (still) exists 
-//     * @throws VlException */
-//    public abstract boolean exists();
+    /** Returns resource type, if it has one */
+    public abstract String getType();
+
+    /** Whether this node (still) exists 
+     * @throws VlException */
+    public abstract boolean exists();
 }
