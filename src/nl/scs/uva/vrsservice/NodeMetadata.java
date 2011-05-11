@@ -23,68 +23,18 @@ import nl.uva.vlet.vrs.VNode;
 public class NodeMetadata implements INodeMetadata {
 
     private final VNode node;
-    private final String name;
-    private NodeMetadata parent = null;
-    private URI uri = null;
-    private final String extention;
-    private VAttribute[] attributes = null;
-    private final long nodeId;
-    private final String path;
-    private final String hostname;
-    private final int port;
-    private final String baseName;
-    private String charSet = null;
-    private final boolean composite;
-    private final String[] attrNames;
-    private final String query;
-    private final String iconURL;
-    private final String str;
 
     public NodeMetadata(VNode node) {
-        debug("-----------------New Node "+this.hashCode()+" ----------------");
+        debug("-----------------New Node " + this.hashCode() + " ----------------");
         this.node = node;
         debug("Node: " + node.hashCode());
         debug("VRL: " + node.getVRL());
-
-        name = node.getName();
-        try {
-            uri = node.getURI();
-        } catch (Exception ex) {
-            debug("PROBLEM: " + ex.getMessage());
-        }
-        extention = node.getExtension();
-        try {
-            attributes = node.getAttributes();
-        } catch (Exception ex) {
-            debug("PROBLEM: " + ex.getMessage());
-        }
-        nodeId = node.getNodeID();
-        path = node.getPath();
-        hostname = node.getHostname();
-        port = node.getPort();
-        baseName = node.getBasename();
-
-        try {
-            charSet = node.getCharSet();
-        } catch (Exception ex) {
-            debug("PROBLEM: " + ex.getMessage());
-        }
-        composite = node.isComposite();
-        attrNames = node.getAttributeNames();
-        query = node.getQuery();
-        iconURL = node.getIconURL();
-        str = node.toString();
-//        try {
-//            parent = new NodeMetadata(node.getParent());
-//        } catch (Exception ex) {
-//            debug("PROBLEM: " + ex.getMessage());
-//        }
-
         debug("--------------------------------------------");
     }
 
     @Override
     public String getName() {
+        String name = node.getName();
         debug("getName: " + name);
         return name;
     }
@@ -92,8 +42,8 @@ public class NodeMetadata implements INodeMetadata {
     @Override
     public URI getURI() {
         try {
+            URI uri = node.getURI();
             debug("getURI: " + uri);
-
             return uri;
         } catch (Exception ex) {
             System.err.println("Cant get URI!");
@@ -105,19 +55,20 @@ public class NodeMetadata implements INodeMetadata {
 
     @Override
     public String getExtension() {
+        String extention = node.getExtension();
         debug("getExtension: " + extention);
         return extention;
     }
 
     @Override
     public VAttribute getAttribute(String name) {
-        for (int i = 0; i < attributes.length; i++) {
-            if (attributes[i].getName().equals(name)) {
-                debug("getAttribute: " + attributes[i]);
-                return attributes[i];
-            }
+        VAttribute attributes = null;
+        try {
+            attributes = node.getAttribute(name);
+        } catch (VlException ex) {
+            Logger.getLogger(NodeMetadata.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return null;
+        return attributes;
     }
 
 //    @Override
@@ -138,30 +89,35 @@ public class NodeMetadata implements INodeMetadata {
 //    }
     @Override
     public long getNodeID() {
+        long nodeId = node.getNodeID();
         debug("getNodeID: " + nodeId);
         return nodeId;
     }
 
     @Override
     public String getPath() {
+        String path = node.getPath();
         debug("getPath: " + path);
         return path;
     }
 
     @Override
     public String getHostname() {
+        String hostname = node.getHostname();
         debug("Hostname: " + hostname);
         return hostname;
     }
 
     @Override
     public int getPort() {
+        int port = node.getPort();
         debug("getPort: " + port);
         return port;
     }
 
     @Override
     public String getBasename() {
+        String baseName = node.getBasename();
         debug("getBasename: " + baseName);
         return baseName;
     }
@@ -181,6 +137,7 @@ public class NodeMetadata implements INodeMetadata {
     @Override
     public String getCharSet() {
         try {
+            String charSet = node.getCharSet();
             debug("getCharSet: " + charSet);
             return charSet;
         } catch (Exception ex) {
@@ -191,12 +148,14 @@ public class NodeMetadata implements INodeMetadata {
 
     @Override
     public boolean isComposite() {
+        boolean composite = node.isComposite();
         debug("isComposite: " + composite);
         return composite;
     }
 
     @Override
     public String[] getAttributeNames() {
+        String[] attrNames = node.getAttributeNames();
         debug("getAttributeNames: " + attrNames);
         return attrNames;
     }
@@ -246,6 +205,7 @@ public class NodeMetadata implements INodeMetadata {
 //    }
     @Override
     public String getQuery() {
+        String query = node.getQuery();
         debug("getQuery: " + query);
         return query;
     }
@@ -264,12 +224,14 @@ public class NodeMetadata implements INodeMetadata {
 //    }
     @Override
     public String getIconURL() {
+        String iconURL = node.getIconURL();
         debug("getIconURL: " + iconURL);
         return iconURL;
     }
 
     @Override
     public String toString() {
+        String str = node.toString();
         debug("toString: " + str);
         return str;
     }
@@ -282,7 +244,8 @@ public class NodeMetadata implements INodeMetadata {
     @Override
     public INodeMetadata getParent() {
         try {
-            //for some reason it goes into recursion 
+            //for some reason it goes into recursion
+            NodeMetadata parent = new NodeMetadata(node.getParent());
             debug("getParent: " + parent);
             return parent;
         } catch (Exception ex) {
