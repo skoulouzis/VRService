@@ -54,9 +54,9 @@ public class VRService implements IVRS {
     }
 
     @Override
-    public INodeMetadata openLocation(URI location) {
+    public INodeMetadata openLocation(org.apache.axis2.databinding.types.URI location) {
         try {
-            return new NodeMetadata(client.openLocation(new VRL(location)));
+            return new NodeMetadata(client.openLocation(new VRL(location.toString())));
         } catch (VlException ex) {
             Logger.getLogger(VRService.class.getName()).log(Level.SEVERE, null, ex);
         }
