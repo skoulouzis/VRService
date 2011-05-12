@@ -18,8 +18,8 @@ interface IVRS {
 
     public URI resolve(URI baseURI, String relativeVRL);
 
-    /** Open remote location and return VNode */
-    public INodeMetadata openLocation(URI location);
+    /** Open remote location and return INodeMetadata. We have to use this URI. Other uri types have a reflcation problem  */
+    public INodeMetadata openLocation(org.apache.axis2.databinding.types.URI location);
 
 //    public INodeMetadata openLocation(String locationString);
 
