@@ -4,20 +4,15 @@
  */
 package nl.scs.uva.vrsservice;
 
-import java.net.URI;
-import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import nl.uva.vlet.Global;
-import nl.uva.vlet.GlobalConfig;
 import nl.uva.vlet.data.VAttribute;
 import nl.uva.vlet.data.VAttributeSet;
 import nl.uva.vlet.exception.VlException;
-import nl.uva.vlet.exception.VlIOException;
 import nl.uva.vlet.exception.VlURISyntaxException;
-import nl.uva.vlet.util.MimeTypes;
 import nl.uva.vlet.vrl.VRL;
 import nl.uva.vlet.vrs.VNode;
+import org.apache.axis2.databinding.types.URI.MalformedURIException;
 
 /**
  *
@@ -26,7 +21,6 @@ import nl.uva.vlet.vrs.VNode;
 public class NodeMetadata implements INodeMetadata {
 
     private final VNode node;
-    private static int parentLevel = 0;
 
     public NodeMetadata(VNode node) {
         debug("-----------------New Node " + this.hashCode() + " ----------------");
@@ -43,17 +37,11 @@ public class NodeMetadata implements INodeMetadata {
     }
 
     @Override
-    public URI getURI() {
-        try {
-            URI uri = node.getURI();
-            debug("getURI: " + uri);
-            return uri;
-        } catch (Exception ex) {
-            System.err.println("Cant get URI!");
-
-        }
-
-        return null;
+    public org.apache.axis2.databinding.types.URI getURI() throws MalformedURIException, VlException {
+        org.apache.axis2.databinding.types.URI uri;
+        uri = new org.apache.axis2.databinding.types.URI(node.getURI().toString());
+        debug("getURI: " + uri);
+        return uri;
     }
 
     @Override
@@ -63,17 +51,12 @@ public class NodeMetadata implements INodeMetadata {
         return extention;
     }
 
-    @Override
-    public VAttribute getAttribute(String name) {
-        VAttribute attributes = null;
-        try {
-            attributes = node.getAttribute(name);
-        } catch (VlException ex) {
-            Logger.getLogger(NodeMetadata.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return attributes;
-    }
-
+//    @Override
+//    public VAttribute getAttribute(String name) throws VlException {
+//        VAttribute attributes = null;
+//        attributes = node.getAttribute(name);
+//        return attributes;
+//    }
 //    @Override
 //    public VRL getVRL() {
 //        //Takes a long time!!!!!!
@@ -126,29 +109,18 @@ public class NodeMetadata implements INodeMetadata {
     }
 
     @Override
-    public String getMimeType() {
+    public String getMimeType() throws VlException {
         String type = null;
-        try {
-            MimeTypes l;
-
-            type = node.getMimeType();
-            debug("getMimeType: " + type);
-        } catch (Exception ex) {
-            System.err.println("I dont know this type!!!!!!!!");
-        }
+        type = node.getMimeType();
+        debug("getMimeType: " + type);
         return type;
     }
 
     @Override
-    public String getCharSet() {
-        try {
-            String charSet = node.getCharSet();
-            debug("getCharSet: " + charSet);
-            return charSet;
-        } catch (Exception ex) {
-            System.err.println("Cant get Char set!");
-        }
-        return null;
+    public String getCharSet() throws VlException {
+        String charSet = node.getCharSet();
+        debug("getCharSet: " + charSet);
+        return charSet;
     }
 
     @Override
@@ -158,69 +130,41 @@ public class NodeMetadata implements INodeMetadata {
         return composite;
     }
 
+//    @Override
+//    public String[] getAttributeNames() {
+//        String[] attrNames = node.getAttributeNames();
+//        for (String name : attrNames) {
+//            debug("getAttributeNames: " + name);
+//        }
+//        return attrNames;
+//    }
     @Override
-    public String[] getAttributeNames() {
-        String[] attrNames = node.getAttributeNames();
-        for (String name : attrNames) {
-            debug("getAttributeNames: " + name);
-        }
-        return attrNames;
+    public NodeAttributes getAttributes() throws VlException {
+
+        //bug with getDateValue java.lang.reflect.InvocationTargetException 
+        return new NodeAttributes(node);
     }
 
 //    @Override
-//    public VAttribute[] getAttributes() {
-//        //Dug with getDateValue
-//        try {
-//            VAttribute[] attributes = node.getAttributes();
-//            debug("getAttributes: " + attributes);
-//
-//            for (VAttribute attr : attributes) {
-//                 debug("getAttributes: " + attr.getName() );
-////                debug("getAttributes: " + attr.getName() + " : " + attr.getValue());
-//            }
-//            return attributes;
-//        } catch (Exception ex) {
-//            System.err.println("Can't get attributes!!!!!!!!!");
-//            System.err.println(ex.getMessage());
-//        }
-//        return null;
+//    public NodeAttributes getAttributes(String[] names) throws VlException {
+//        allAttributes = new NodeAttributes(node,names);
+//        debug("getAttributes: " + attr);
+//        return attr;
 //    }
-    @Override
-    public VAttribute[] getAttributes(String[] names) {
-        try {
-            VAttribute[] attr = node.getAttributes(names);
-            debug("getAttributes: " + attr);
-            return attr;
-        } catch (Exception ex) {
-            System.err.println("Can't get attributes!!!!!!!!!");
-        }
-        return null;
-    }
-
-    @Override
-    public VAttributeSet getAttributeSet(String[] names) {
-        try {
-            VAttributeSet attrSet = node.getAttributeSet(names);
-            debug("getAttributeSet: " + attrSet);
-            return attrSet;
-        } catch (Exception ex) {
-            System.err.println("Cant get getAttributeSet!");
-        }
-        return null;
-    }
-
-    @Override
-    public VAttribute getNonmutableAttribute(String name) {
-        try {
-            VAttribute attr = node.getNonmutableAttribute(name);
-            debug("getNonmutableAttribute: " + attr);
-            return attr;
-        } catch (Exception ex) {
-            System.err.println("Cant get getNonmutableAttribute!");
-        }
-        return null;
-    }
-
+//
+//    @Override
+//    public VAttributeSet getAttributeSet(String[] names) throws VlException {
+//        VAttributeSet attrSet = node.getAttributeSet(names);
+//        debug("getAttributeSet: " + attrSet);
+//        return attrSet;
+//    }
+//
+//    @Override
+//    public VAttribute getNonmutableAttribute(String name) throws VlException {
+//        VAttribute attr = node.getNonmutableAttribute(name);
+//        debug("getNonmutableAttribute: " + attr);
+//        return attr;
+//    }
     @Override
     public String getQuery() {
         String query = node.getQuery();
@@ -280,15 +224,10 @@ public class NodeMetadata implements INodeMetadata {
 //        return null;
 //    }
     @Override
-    public URI getParentLocation() {
-        try {
-            VRL parentLoc = node.getParentLocation();
-            debug("getParentLocation: " + parentLoc);
-            return parentLoc.toURI();
-        } catch (VlURISyntaxException ex) {
-            Logger.getLogger(NodeMetadata.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return null;
+    public org.apache.axis2.databinding.types.URI getParentLocation() throws VlURISyntaxException, MalformedURIException {
+        VRL parentLoc = node.getParentLocation();
+        debug("getParentLocation: " + parentLoc);
+        return new org.apache.axis2.databinding.types.URI(parentLoc.toURIString());
     }
 
 //    @Override
@@ -312,7 +251,6 @@ public class NodeMetadata implements INodeMetadata {
 //        }
 //        return null;
 //    }
-
     @Override
     public String getScheme() {
         return node.getScheme();
@@ -324,33 +262,18 @@ public class NodeMetadata implements INodeMetadata {
     }
 
     @Override
-    public VRL resolvePathVRL(String path) {
-        try {
-            return node.resolvePathVRL(path);
-        } catch (Exception ex) {
-            System.err.println("Cant resolvePathVRL!");
-        }
-        return null;
+    public org.apache.axis2.databinding.types.URI resolvePathURI(String path) throws VlURISyntaxException, MalformedURIException {
+        return new org.apache.axis2.databinding.types.URI(node.resolvePathVRL(path).toURIString());
     }
 
     @Override
-    public String getStatus() {
-        try {
-            return node.getStatus();
-        } catch (Exception ex) {
-            System.err.println("Can;t get status!!!!!");
-        }
-        return null;
+    public String getStatus() throws VlException {
+        return node.getStatus();
     }
 
     @Override
-    public boolean sync() {
-        try {
-            return node.sync();
-        } catch (Exception ex) {
-            System.err.println("Can't sync!!");
-        }
-        return false;
+    public boolean sync() throws VlException {
+        return node.sync();
     }
 
     @Override
@@ -359,13 +282,8 @@ public class NodeMetadata implements INodeMetadata {
     }
 
     @Override
-    public boolean exists() {
-        try {
-            return node.exists();
-        } catch (Exception ex) {
-            System.err.println("Dont't if exists!");
-        }
-        return false;
+    public boolean exists() throws VlException {
+        return node.exists();
     }
 
     private void debug(String msg) {

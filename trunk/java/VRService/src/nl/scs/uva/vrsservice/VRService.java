@@ -4,20 +4,17 @@
  */
 package nl.scs.uva.vrsservice;
 
-import java.net.URI;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import nl.uva.vlet.Global;
 import nl.uva.vlet.GlobalConfig;
 import nl.uva.vlet.exception.VlException;
-import nl.uva.vlet.exception.VlURISyntaxException;
 import nl.uva.vlet.util.bdii.ServiceInfo;
 import nl.uva.vlet.util.bdii.ServiceInfo.ServiceInfoType;
 import nl.uva.vlet.vrl.VRL;
 import nl.uva.vlet.vrs.VNode;
 import nl.uva.vlet.vrs.VRSClient;
 import nl.uva.vlet.vrs.VRSContext;
+import org.apache.axis2.databinding.types.URI.MalformedURIException;
 
 /**
  *
@@ -44,67 +41,33 @@ public class VRService implements IVRS {
     }
 
     @Override
-    public URI resolve(URI baseURI, String relativeVRL) {
-        try {
-            return VRSClient.resolve(new VRL(baseURI), relativeVRL).toURI();
-        } catch (VlURISyntaxException ex) {
-            Logger.getLogger(VRService.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return null;
+    public org.apache.axis2.databinding.types.URI resolve(org.apache.axis2.databinding.types.URI baseURI, String relativeVRL) throws MalformedURIException, VlException {
+            return  new org.apache.axis2.databinding.types.URI(VRSClient.resolve(new VRL(baseURI.toString()), relativeVRL).toURIString()) ;
     }
 
     @Override
-    public INodeMetadata openLocation(org.apache.axis2.databinding.types.URI location) {
-        try {
-            return new NodeMetadata(client.openLocation(new VRL(location.toString())));
-        } catch (VlException ex) {
-            Logger.getLogger(VRService.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return null;
-    }
-
-//    @Override
-//    public INodeMetadata openLocation(String locationString) {
-//        try {
-//            return new NodeMetadata(client.openLocation(locationString));
-//        } catch (VlException ex) {
-//            Logger.getLogger(VRService.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-//        return null;
-//    }
-
-    @Override
-    public INodeMetadata getNode(URI location) {
-        try {
-            return new NodeMetadata(client.getNode(new VRL(location)));
-        } catch (VlException ex) {
-            Logger.getLogger(VRService.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return null;
+    public INodeMetadata openLocation(org.apache.axis2.databinding.types.URI location) throws VlException {
+        return new NodeMetadata(client.openLocation(new VRL(location.toString())));
     }
 
     @Override
-    public ArrayList<ServiceInfo> queryServiceInfo(String vo, ServiceInfoType type) {
-        try {
-            return client.queryServiceInfo(vo, type);
-        } catch (VlException ex) {
-            Logger.getLogger(VRService.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return null;
+    public INodeMetadata getNode(org.apache.axis2.databinding.types.URI location) throws VlException {
+        return new NodeMetadata(client.getNode(new VRL(location.toString())));
     }
 
     @Override
-    public INodeMetadata[] list(URI theURI) {
-        try {
-            VNode[] nodes = client.list(new VRL(theURI));
-            NodeMetadata[] metaNodes = new NodeMetadata[nodes.length];
-            for (int i = 0; i < nodes.length; i++) {
-                metaNodes[i] = new NodeMetadata(nodes[i]);
-            }
-            return metaNodes;
-        } catch (VlException ex) {
-            Logger.getLogger(VRService.class.getName()).log(Level.SEVERE, null, ex);
+    public ArrayList<ServiceInfo> queryServiceInfo(String vo, ServiceInfoType type) throws VlException {
+        return client.queryServiceInfo(vo, type);
+    }
+
+    @Override
+    public INodeMetadata[] list(org.apache.axis2.databinding.types.URI theURI) throws VlException {
+        VNode[] nodes = client.list(new VRL(theURI.toString()));
+        NodeMetadata[] metaNodes = new NodeMetadata[nodes.length];
+        for (int i = 0; i < nodes.length; i++) {
+            metaNodes[i] = new NodeMetadata(nodes[i]);
         }
-        return null;
+        return metaNodes;
+
     }
 }
