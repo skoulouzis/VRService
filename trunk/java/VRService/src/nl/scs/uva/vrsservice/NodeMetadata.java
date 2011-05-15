@@ -4,10 +4,7 @@
  */
 package nl.scs.uva.vrsservice;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import nl.uva.vlet.data.VAttribute;
-import nl.uva.vlet.data.VAttributeSet;
 import nl.uva.vlet.exception.VlException;
 import nl.uva.vlet.exception.VlURISyntaxException;
 import nl.uva.vlet.vrl.VRL;
@@ -138,11 +135,17 @@ public class NodeMetadata implements INodeMetadata {
 //        }
 //        return attrNames;
 //    }
+    
     @Override
-    public NodeAttributes getAttributes() throws VlException {
-
-        //bug with getDateValue java.lang.reflect.InvocationTargetException 
-        return new NodeAttributes(node);
+    public NodeAttribute[] getAttributes() throws VlException {
+        //bug with getDateValue java.lang.reflect.InvocationTargetException
+        debug("getAttributes()");
+        VAttribute[] attr = node.getAttributes();
+        NodeAttribute[] nodeAttr = new NodeAttribute[attr.length];
+        for(int i=0;i<attr.length;i++){
+            nodeAttr[i] = new NodeAttribute(attr[i]);
+        }
+        return nodeAttr;
     }
 
 //    @Override
