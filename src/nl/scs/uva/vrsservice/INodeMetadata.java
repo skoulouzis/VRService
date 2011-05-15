@@ -4,12 +4,9 @@
  */
 package nl.scs.uva.vrsservice;
 
-import nl.uva.vlet.data.VAttribute;
-import nl.uva.vlet.data.VAttributeSet;
 import nl.uva.vlet.exception.VlException;
 import nl.uva.vlet.exception.VlIOException;
 import nl.uva.vlet.exception.VlURISyntaxException;
-import nl.uva.vlet.vrl.VRL;
 import org.apache.axis2.databinding.types.URI.MalformedURIException;
 
 /**
@@ -81,7 +78,7 @@ interface INodeMetadata {
      * Get all attributes defined by attributeNames 
      * @throws VlException 
      */
-    public NodeAttributes getAttributes() throws VlException;
+    public NodeAttribute[] getAttributes() throws VlException;
     /** 
      * Get all attributes defined by <code>names</code>.<br>
      * Elements in the <code>names</code> array may be null! 
