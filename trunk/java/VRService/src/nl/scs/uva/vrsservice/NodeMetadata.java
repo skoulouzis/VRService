@@ -13,7 +13,7 @@ import org.apache.axis2.databinding.types.URI.MalformedURIException;
 
 /**
  *
- * @author alogo
+ * @author S. Koulouzis
  */
 public class NodeMetadata implements INodeMetadata {
 

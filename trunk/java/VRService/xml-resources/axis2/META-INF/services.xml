@@ -8,4 +8,12 @@
         </messageReceivers>
         <parameter name="ServiceClass">nl.scs.uva.vrsservice.VRService</parameter>
     </service>
+    <service name="VFService" scope="application">
+        <description>VFService service</description>
+        <messageReceivers>
+            <messageReceiver mep="http://www.w3.org/2004/08/wsdl/in-only" class="org.apache.axis2.rpc.receivers.RPCInOnlyMessageReceiver"/>
+            <messageReceiver mep="http://www.w3.org/2004/08/wsdl/in-out" class="org.apache.axis2.rpc.receivers.RPCMessageReceiver"/>
+        </messageReceivers>
+        <parameter name="ServiceClass">nl.scs.uva.vrsservice.VFService</parameter>
+    </service>
 </serviceGroup>
