@@ -6,4 +6,7 @@
     <service name="VRService">
         <service-class>nl.scs.uva.vrsservice.VRService</service-class>
     </service>
+    <service name="VFService">
+        <service-class>nl.scs.uva.vrsservice.VFService</service-class>
+    </service>
 </axis2>
