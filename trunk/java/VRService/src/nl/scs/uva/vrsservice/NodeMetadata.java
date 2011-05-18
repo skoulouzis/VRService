@@ -7,8 +7,13 @@ package nl.scs.uva.vrsservice;
 import nl.uva.vlet.data.VAttribute;
 import nl.uva.vlet.exception.VlException;
 import nl.uva.vlet.exception.VlURISyntaxException;
+import nl.uva.vlet.vfs.VDir;
+import nl.uva.vlet.vfs.VFSNode;
+import nl.uva.vlet.vfs.VFile;
+import nl.uva.vlet.vfs.VUnixFileAttributes;
 import nl.uva.vlet.vrl.VRL;
 import nl.uva.vlet.vrs.VNode;
+import org.apache.axis2.databinding.types.URI;
 import org.apache.axis2.databinding.types.URI.MalformedURIException;
 
 /**
@@ -135,14 +140,13 @@ public class NodeMetadata implements INodeMetadata {
 //        }
 //        return attrNames;
 //    }
-    
     @Override
     public NodeAttribute[] getAttributes() throws VlException {
         //bug with getDateValue java.lang.reflect.InvocationTargetException
         debug("getAttributes()");
         VAttribute[] attr = node.getAttributes();
         NodeAttribute[] nodeAttr = new NodeAttribute[attr.length];
-        for(int i=0;i<attr.length;i++){
+        for (int i = 0; i < attr.length; i++) {
             nodeAttr[i] = new NodeAttribute(attr[i]);
         }
         return nodeAttr;
@@ -291,5 +295,203 @@ public class NodeMetadata implements INodeMetadata {
 
     private void debug(String msg) {
         System.err.println(this.getClass().getSimpleName() + ": " + msg);
+    }
+
+    @Override
+    public String getBasename(boolean withExtension) throws VlException {
+        if (node instanceof VFSNode) {
+            return ((VFSNode) node).getBasename(withExtension);
+        }
+        return null;
+    }
+
+    @Override
+    public Boolean isHidden() {
+        if (node instanceof VFSNode) {
+            return ((VFSNode) node).isHidden();
+        }
+        return null;
+    }
+
+    @Override
+    public Boolean isSymbolicLink() throws VlException {
+        if (node instanceof VFSNode) {
+            return ((VFSNode) node).isSymbolicLink();
+        }
+        return null;
+    }
+
+    @Override
+    public String getPermissionsString() throws VlException {
+        if (node instanceof VFSNode) {
+            return ((VFSNode) node).getPermissionsString();
+        }
+        return null;
+    }
+
+    @Override
+    public Boolean isRandomAccessable() {
+        if (node instanceof VFSNode) {
+            return ((VFSNode) node).isRandomAccessable();
+        }
+        return null;
+    }
+
+    @Override
+    public Boolean isEditable() throws VlException {
+        if (node instanceof VFSNode) {
+            return ((VFSNode) node).isEditable();
+        }
+        return null;
+    }
+
+    @Override
+    public Boolean isDeletable() throws VlException {
+        if (node instanceof VFSNode) {
+            return ((VFSNode) node).isDeletable();
+        }
+        return null;
+    }
+
+    @Override
+    public Boolean isRenamable() throws VlException {
+        if (node instanceof VFSNode) {
+            return ((VFSNode) node).isRenamable();
+        }
+        return null;
+    }
+
+    @Override
+    public Boolean isFile() {
+        if (node instanceof VFSNode) {
+            return ((VFSNode) node).isFile();
+        }
+        return false;
+    }
+
+    @Override
+    public Boolean isDir() {
+        if (node instanceof VFSNode) {
+            return ((VFSNode) node).isDir();
+        }
+        return false;
+    }
+
+    @Override
+    public Long getModificationTime() throws VlException {
+        if (node instanceof VFSNode) {
+            return ((VFSNode) node).getModificationTime();
+        }
+        return null;
+    }
+
+    @Override
+    public Boolean isReadable() throws VlException {
+        if (node instanceof VFSNode) {
+            return ((VFSNode) node).isReadable();
+        }
+        return null;
+    }
+
+    @Override
+    public Boolean isWritable() throws VlException {
+        if (node instanceof VFSNode) {
+            return ((VFSNode) node).isWritable();
+        }
+        return null;
+    }
+
+    @Override
+    public Integer getMode() throws VlException {
+        if (node instanceof VUnixFileAttributes) {
+            return ((nl.uva.vlet.vfs.VUnixFileMode) node).getMode();
+        }
+        return null;
+    }
+
+    @Override
+    public Long getLength() throws VlException {
+        if (node instanceof VFile) {
+            return ((VFile) node).getLength();
+        }
+        return null;
+    }
+
+    @Override
+    public String[] getResourceTypes() {
+        if (node instanceof VDir) {
+            return ((VDir) node).getResourceTypes();
+        }
+        return null;
+    }
+
+    @Override
+    public Boolean isAccessable() throws VlException {
+        if (node instanceof VDir) {
+            return ((VDir) node).isAccessable();
+        }
+        return null;
+    }
+
+    @Override
+    public URI[] listSorted(boolean typeFirst, boolean ignoreCase) throws VlException, MalformedURIException {
+        if (node instanceof VDir) {
+            VFSNode[] nodes = ((VDir) node).listSorted(typeFirst, ignoreCase);
+            URI[] nodesURI = new URI[nodes.length];
+
+            for (int i = 0; i < nodes.length; i++) {
+                nodesURI[i] = new URI(nodes[i].getURI().toString());
+            }
+
+            return nodesURI;
+        }
+        return null;
+    }
+
+    @Override
+    public Boolean existsFile(String fileName) throws VlException {
+        if (node instanceof VDir) {
+            return ((VDir) node).existsFile(fileName);
+        }
+        return null;
+    }
+
+    @Override
+    public Boolean existsDir(String dirName) throws VlException {
+        if (node instanceof VDir) {
+            return ((VDir) node).existsDir(dirName);
+        }
+        return null;
+    }
+
+    @Override
+    public Boolean hasFile(String fileName) throws VlException {
+        if (node instanceof VDir) {
+            return ((VDir) node).hasFile(fileName);
+        }
+        return null;
+    }
+
+    @Override
+    public Boolean hasDir(String dirName) throws VlException {
+        if (node instanceof VDir) {
+            return ((VDir) node).hasDir(dirName);
+        }
+        return null;
+    }
+
+    @Override
+    public URI[] list() throws VlException, MalformedURIException {
+                if (node instanceof VDir) {
+            VFSNode[] nodes = ((VDir) node).list();
+            URI[] nodesURI = new URI[nodes.length];
+
+            for (int i = 0; i < nodes.length; i++) {
+                nodesURI[i] = new URI(nodes[i].getURI().toString());
+            }
+
+            return nodesURI;
+        }
+        return null;
     }
 }

@@ -11,11 +11,9 @@ import nl.uva.vlet.exception.VlURISyntaxException;
 import nl.uva.vlet.vfs.VDir;
 import nl.uva.vlet.vfs.VFSClient;
 import nl.uva.vlet.vfs.VFSNode;
-import nl.uva.vlet.vfs.VFSTransfer;
 import nl.uva.vlet.vfs.VFile;
 import nl.uva.vlet.vrl.VRL;
 import nl.uva.vlet.vrs.VRSContext;
-import org.apache.axis2.databinding.types.URI;
 import org.apache.axis2.databinding.types.URI.MalformedURIException;
 
 /**
@@ -43,156 +41,192 @@ public class VFService implements IVFS {
     }
 
     @Override
-    public IVFSNodeMetadata openLocation(org.apache.axis2.databinding.types.URI location) throws VlException {
+    public INodeMetadata openLocation(org.apache.axis2.databinding.types.URI location) throws VlException {
         VFSNode node = client.openLocation(location.toString());
-        return new VFSNodeMetadata(node);
+        return new NodeMetadata(node);
     }
 
     @Override
-    public IVFileMetadata getFile(org.apache.axis2.databinding.types.URI locStr) throws VlException {
+    public INodeMetadata getFile(org.apache.axis2.databinding.types.URI locStr) throws VlException {
         VFile node = client.getFile(locStr.toString());
-        return new VFileMetadata(node);
+        return new NodeMetadata(node);
     }
-    
 
     @Override
-    public URI resolve(URI relLoc) throws VlURISyntaxException, MalformedURIException {
+    public org.apache.axis2.databinding.types.URI resolve(org.apache.axis2.databinding.types.URI relLoc) throws VlURISyntaxException, MalformedURIException {
         VRL res = client.resolve(relLoc.toString());
-        return new URI(res.toURIString());
+        return new org.apache.axis2.databinding.types.URI(res.toURIString());
     }
 
     @Override
-    public IVFSNodeMetadata getVFSNode(URI uri) throws VlException {
+    public INodeMetadata getVFSNode(org.apache.axis2.databinding.types.URI uri) throws VlException {
         VFSNode node = client.getVFSNode(uri.toString());
-        return new VFSNodeMetadata(node);
+        return new NodeMetadata(node);
     }
 
     @Override
-    public IVFileMetadata openFile(URI location) throws VlException {
+    public INodeMetadata openFile(org.apache.axis2.databinding.types.URI location) throws VlException {
         VFile file = client.openFile(new VRL(location.toString()));
-        return new VFileMetadata(file);
+        return new NodeMetadata(file);
     }
 
     @Override
-    public IVDirMetadata getDir(URI loc) throws VlException {
+    public INodeMetadata getDir(org.apache.axis2.databinding.types.URI loc) throws VlException {
         VDir dir = client.getDir(loc.toString());
-        return new VDirMetadata(dir);
+        return new NodeMetadata(dir);
     }
 
     @Override
-    public IVDirMetadata openDir(URI location) throws VlException {
+    public INodeMetadata openDir(org.apache.axis2.databinding.types.URI location) throws VlException {
         VDir dir = client.openDir(new VRL(location.toString()));
-        return new VDirMetadata(dir);
+        return new NodeMetadata(dir);
     }
 
     @Override
-    public IVFileMetadata move(URI file, URI dest) throws VlException {                
-        throw new UnsupportedOperationException("Not supported yet.");
+    public INodeMetadata move(org.apache.axis2.databinding.types.URI source, org.apache.axis2.databinding.types.URI dest) throws VlException {
+        VFSNode sourceNode = client.openLocation(source.toString());
+        VFSNode destNode = client.openLocation(dest.toString());
+
+        if (sourceNode.isDir() && destNode.isDir()) {
+            return new NodeMetadata(client.move(((VDir) sourceNode), ((VDir) destNode)));
+
+        }
+        if (sourceNode.isFile() && destNode.isFile()) {
+            return new NodeMetadata(client.move(((VFile) sourceNode), ((VFile) destNode)));
+        }
+
+        if (sourceNode.isFile() && destNode.isDir()) {
+            return new NodeMetadata(client.move(((VFile) sourceNode), ((VDir) destNode)));
+        }
+        return null;
     }
 
     @Override
-    public IVFSNodeMetadata copy(URI vfile, URI parentDir) throws VlException {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public INodeMetadata copy(org.apache.axis2.databinding.types.URI source, org.apache.axis2.databinding.types.URI dest) throws VlException {
+        VFSNode sourceNode = client.openLocation(source.toString());
+        VFSNode destNode = client.openLocation(dest.toString());
+        if (sourceNode.isDir() && destNode.isDir()) {
+            return new NodeMetadata(client.copy(((VDir) sourceNode), ((VDir) destNode)));
+
+        }
+        if (sourceNode.isFile() && destNode.isFile()) {
+            client.copy(((VFile) sourceNode), ((VFile) destNode));
+            return new NodeMetadata(destNode);
+        }
+
+        if (sourceNode.isFile() && destNode.isDir()) {
+            return new NodeMetadata(client.copy(((VFile) sourceNode), ((VDir) destNode)));
+        }
+        return null;
+    }
+
+//    @Override
+//    public VFSTransfer asyncCopy(org.apache.axis2.databinding.types.URI dir, org.apache.axis2.databinding.types.URI parentDir) throws VlException {
+//        throw new UnsupportedOperationException("Not supported yet.");
+//    }
+//    @Override
+//    public VFSTransfer asyncMove(org.apache.axis2.databinding.types.URI dir, org.apache.axis2.databinding.types.URI parentDir) throws VlException {
+//        throw new UnsupportedOperationException("Not supported yet.");
+//    }
+    @Override
+    public boolean rename(org.apache.axis2.databinding.types.URI uri, String pathOrName) throws VlException {
+        return client.rename(new VRL(uri.toString()), pathOrName);
     }
 
     @Override
-    public VFSTransfer asyncCopy(URI dir, URI parentDir) throws VlException {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public boolean existsDir(org.apache.axis2.databinding.types.URI location) throws VlException {
+        return client.existsDir(location.toString());
     }
 
     @Override
-    public VFSTransfer asyncMove(URI dir, URI parentDir) throws VlException {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public boolean existsFile(org.apache.axis2.databinding.types.URI location) throws VlException {
+        return client.existsFile(location.toString());
     }
 
     @Override
-    public boolean rename(URI uri, String pathOrName) throws VlException {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public boolean existsPath(org.apache.axis2.databinding.types.URI location) throws VlException {
+        return client.existsPath(new VRL(location.toString()));
     }
 
     @Override
-    public boolean existsDir(URI location) throws VlException {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public INodeMetadata mkdir(org.apache.axis2.databinding.types.URI loc) throws VlException {
+        VDir dir = client.mkdir(loc.toString());
+        return new NodeMetadata(dir);
     }
 
     @Override
-    public boolean existsFile(URI location) throws VlException {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public INodeMetadata mkdirs(org.apache.axis2.databinding.types.URI loc) throws VlException {
+        VDir dir = client.mkdirs(new VRL(loc.toString()));
+        return new NodeMetadata(dir);
     }
 
     @Override
-    public boolean existsPath(URI location) throws VlException {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public INodeMetadata getTempDir() throws VlException {
+        return new NodeMetadata(client.getTempDir());
     }
 
     @Override
-    public IVDirMetadata mkdir(URI loc) throws VlException {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public INodeMetadata createUniqueTempDir() throws VlException {
+        return new NodeMetadata(client.createUniqueTempDir());
     }
 
     @Override
-    public IVDirMetadata mkdirs(URI loc) throws VlException {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public boolean setTempDir(org.apache.axis2.databinding.types.URI loc) throws VlURISyntaxException {
+        return client.setTempDir(new VRL(loc.toString()));
     }
 
     @Override
-    public IVDirMetadata getTempDir() throws VlException {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public INodeMetadata createFile(org.apache.axis2.databinding.types.URI filepath, boolean ignoreExisting) throws VlException {
+        VFile file = client.createFile(new VRL(filepath.toString()), ignoreExisting);
+        return new NodeMetadata(file);
     }
 
     @Override
-    public IVDirMetadata createUniqueTempDir() throws VlException {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public org.apache.axis2.databinding.types.URI getUserHomeLocation() throws MalformedURIException, VlURISyntaxException {
+        VRL homeLoc = client.getUserHomeLocation();
+        return new org.apache.axis2.databinding.types.URI(homeLoc.toURIString());
     }
 
     @Override
-    public boolean setTempDir(URI loc) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public void setWorkingDir(org.apache.axis2.databinding.types.URI dir) throws VlURISyntaxException {
+        client.setWorkingDir(new VRL(dir.toString()));
     }
 
     @Override
-    public IVFileMetadata createFile(URI filepath, boolean ignoreExisting) throws VlException {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public org.apache.axis2.databinding.types.URI getWorkingDir() throws VlURISyntaxException, MalformedURIException {
+        VRL vrl = client.getWorkingDir();
+        return new org.apache.axis2.databinding.types.URI(vrl.toURIString());
     }
 
     @Override
-    public URI getUserHomeLocation() {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public INodeMetadata[] list(org.apache.axis2.databinding.types.URI path) throws VlException {
+        VFSNode[] nodes = client.list(new VRL(path.toString()));
+        NodeMetadata[] nodesMeta = new NodeMetadata[nodes.length];
+        for (int i = 0; i < nodes.length; i++) {
+            nodesMeta[i] = new NodeMetadata(nodes[i]);
+        }
+        return nodesMeta;
     }
 
     @Override
-    public void setWorkingDir(IVDirMetadata dir) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public INodeMetadata[] list(org.apache.axis2.databinding.types.URI path, String regexpFilter) throws VlException {
+        VFSNode[] nodes = client.list(new VRL(path.toString()), regexpFilter);
+        NodeMetadata[] nodesMeta = new NodeMetadata[nodes.length];
+        for (int i = 0; i < nodes.length; i++) {
+            nodesMeta[i] = new NodeMetadata(nodes[i]);
+        }
+        return nodesMeta;
     }
 
     @Override
-    public URI getWorkingDir() {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public INodeMetadata newFile(org.apache.axis2.databinding.types.URI location) throws VlException {
+        VFile file = client.newFile(location.toString());
+        return new NodeMetadata(file);
     }
 
     @Override
-    public void setWorkingDir(URI uri) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public INodeMetadata newDir(org.apache.axis2.databinding.types.URI location) throws VlException {
+        VDir dir = client.newDir(location.toString());
+        return new NodeMetadata(dir);
     }
-
-    @Override
-    public IVFSNodeMetadata[] list(URI path) throws VlException {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public IVFSNodeMetadata[] list(URI path, String regexpFilter) throws VlException {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public IVFileMetadata newFile(URI location) throws VlException {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public IVDirMetadata newDir(URI location) throws VlException {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-    
 }
